@@ -2,22 +2,22 @@ fx_version 'adamant'
 game 'common'
 
 client_scripts {
-    'core/avaimet-asetus.lua',
-    'core/avaimet-client.lua',
-    'core/kolari-asetus.lua',
-    'core/kolari-client.lua',
-    'core/lento-client.lua',
-    'core/liikenne-client.lua',
-    'core/tyonto.lua',
-    'core/linkus.lua',
+    'core/setup/keyssetup.lua',
+    'core/client/keyscl.lua',
+    'core/setup/crashsetup.lua',
+    'core/client/crashcl.lua',
+    'core/client/flycl.lua',
+    'core/client/trafficcl.lua',
+    'core/client/pushcl.lua',
+    'core/client/linkuscl.lua'
 }
 
 server_scripts {
-    'core/avaimet-asetus.lua',
-    'core/avaimet-server.lua',
-    'core/kolari-asetus.lua',
-    'core/kolari-server.lua',
+    'core/setup/keyssetup.lua',
+    'core/server/keyssv.lua',
+    'core/setup/crashsetup.lua',
+    'core/server/crashsv.lua'
 }
 
-files 'handling.meta'
-data_file 'VEHICLE_METADATA_FILE' 'handling.meta'
+files 'core/meta/handling.meta'
+data_file 'VEHICLE_METADATA_FILE' 'core/meta/handling.meta'
