@@ -8,19 +8,16 @@ local fEngineDamageMult = 0.0
 local fBrakeForce = 1.0
 local isBrakingForward = false
 local isBrakingReverse = false
-
 local healthEngineLast = 1000.0
 local healthEngineCurrent = 1000.0
 local healthEngineNew = 1000.0
 local healthEngineDelta = 0.0
 local healthEngineDeltaScaled = 0.0
-
 local healthBodyLast = 1000.0
 local healthBodyCurrent = 1000.0
 local healthBodyNew = 1000.0
 local healthBodyDelta = 0.0
 local healthBodyDeltaScaled = 0.0
-
 local healthPetrolTankLast = 1000.0
 local healthPetrolTankCurrent = 1000.0
 local healthPetrolTankNew = 1000.0
@@ -32,24 +29,21 @@ local repairCost = 0
 
 math.randomseed(GetGameTimer());
 
-local tireBurstMaxNumber = cfg.randomTireBurstInterval * 1200; 												-- the tire burst lottery runs roughly 1200 times per minute
-if cfg.randomTireBurstInterval ~= 0 then tireBurstLuckyNumber = math.random(tireBurstMaxNumber) end			-- If we hit this number again randomly, a tire will burst.
-
+local tireBurstMaxNumber = cfg.randomTireBurstInterval * 1200;
+if cfg.randomTireBurstInterval ~= 0 then tireBurstLuckyNumber = math.random(tireBurstMaxNumber) end
 local fixMessagePos = math.random(repairCfg.fixMessageCount)
 local noFixMessagePos = math.random(repairCfg.noFixMessageCount)
 
-hori                           = nil
+hori = nil
 
 Citizen.CreateThread(function()
 	while hori == nil do
 		TriggerEvent('hori:getSharedObject', function(obj) hori = obj end)
 		Citizen.Wait(0)
 	end
-
 	while hori.GetPlayerData().job == nil do
 		Citizen.Wait(10)
 	end
-
 	PlayerData = hori.GetPlayerData()
 end)
 
@@ -58,7 +52,6 @@ AddEventHandler('hori:setJob', function(job)
   PlayerData.job = job
 end)
 
--- Display blips on map
 Citizen.CreateThread(function()
 	if (cfg.displayBlips == true) then
 		for _, item in pairs(repairCfg.mechanics) do
@@ -110,46 +103,35 @@ local function fscale(inputValue, originalMin, originalMax, newBegin, newEnd, cu
 	local normalizedCurVal = 0.0
 	local rangedValue = 0.0
 	local invFlag = 0
-
 	if (curve > 10.0) then curve = 10.0 end
 	if (curve < -10.0) then curve = -10.0 end
-
 	curve = (curve * -.1)
 	curve = 10.0 ^ curve
-
 	if (inputValue < originalMin) then
 	  inputValue = originalMin
 	end
 	if inputValue > originalMax then
 	  inputValue = originalMax
 	end
-
 	OriginalRange = originalMax - originalMin
-
 	if (newEnd > newBegin) then
 		NewRange = newEnd - newBegin
 	else
 	  NewRange = newBegin - newEnd
 	  invFlag = 1
 	end
-
 	zeroRefCurVal = inputValue - originalMin
 	normalizedCurVal  =  zeroRefCurVal / OriginalRange
-
 	if (originalMin > originalMax ) then
 	  return 0
 	end
-
 	if (invFlag == 0) then
 		rangedValue =  ((normalizedCurVal ^ curve) * NewRange) + newBegin
 	else
 		rangedValue =  newBegin - ((normalizedCurVal ^ curve) * NewRange)
 	end
-
 	return rangedValue
 end
-
-
 
 local function tireBurstLottery()
 	local tireBurstNumber = math.random(tireBurstMaxNumber)
@@ -172,7 +154,6 @@ local function tireBurstLottery()
 	end
 end
 
-
 RegisterNetEvent('iens:repair')
 AddEventHandler('iens:repair', function()
 	if isPedDrivingAVehicle() then
@@ -180,11 +161,9 @@ AddEventHandler('iens:repair', function()
 		vehicle = GetVehiclePedIsIn(ped, false)		
 		local engineHealth  = GetVehicleEngineHealth(vehicle)
 		local repairCost = math.floor((1000 - engineHealth)/1000*cfg.price*cfg.DamageMultiplier)
-		
 		if engineHealth == 1000 then
 			repairCost = 150
 		end
-		
 		if IsNearMechanic() then
 			if GetIsVehicleEngineRunning(vehicle) then
 				notification("~g~Engine must be turned off to repair")
@@ -405,13 +384,11 @@ Citizen.CreateThread(function()
 			healthEngineNew = healthEngineCurrent
 			healthEngineDelta = healthEngineLast - healthEngineCurrent
 			healthEngineDeltaScaled = healthEngineDelta * cfg.damageFactorEngine * cfg.classDamageMultiplier[vehicleClass]
-
 			healthBodyCurrent = GetVehicleBodyHealth(vehicle)
 			if healthBodyCurrent == 1000 then healthBodyLast = 1000.0 end
 			healthBodyNew = healthBodyCurrent
 			healthBodyDelta = healthBodyLast - healthBodyCurrent
 			healthBodyDeltaScaled = healthBodyDelta * cfg.damageFactorBody * cfg.classDamageMultiplier[vehicleClass]
-
 			healthPetrolTankCurrent = GetVehiclePetrolTankHealth(vehicle)
 			if cfg.compatibilityMode and healthPetrolTankCurrent < 1 then
 				healthPetrolTankLast = healthPetrolTankCurrent
@@ -420,20 +397,15 @@ Citizen.CreateThread(function()
 			healthPetrolTankNew = healthPetrolTankCurrent
 			healthPetrolTankDelta = healthPetrolTankLast-healthPetrolTankCurrent
 			healthPetrolTankDeltaScaled = healthPetrolTankDelta * cfg.damageFactorPetrolTank * cfg.classDamageMultiplier[vehicleClass]
-
 			if healthEngineCurrent > cfg.engineSafeGuard+1 then
 				SetVehicleUndriveable(vehicle,false)
 			end
-
 			if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
 				SetVehicleUndriveable(vehicle,true)
 			end
-
 			if vehicle ~= lastVehicle then
 				pedInSameVehicleLast = false
 			end
-
-
 			if pedInSameVehicleLast == true then
 				if healthEngineCurrent ~= 1000.0 or healthBodyCurrent ~= 1000.0 or healthPetrolTankCurrent ~= 1000.0 then
 					local healthEngineCombinedDelta = math.max(healthEngineDeltaScaled, healthBodyDeltaScaled, healthPetrolTankDeltaScaled)
@@ -477,7 +449,6 @@ Citizen.CreateThread(function()
 				end
 				pedInSameVehicleLast = true
 			end
-
 			if healthEngineNew ~= healthEngineCurrent then
 				SetVehicleEngineHealth(vehicle, healthEngineNew)
 			end
