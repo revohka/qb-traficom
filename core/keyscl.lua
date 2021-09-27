@@ -34,7 +34,6 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(5)
-
         if hori ~= nil then
             if IsPedInAnyVehicle(GetPlayerPed(-1), false) and GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), true), -1) == GetPlayerPed(-1) then
                 local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(GetPlayerPed(-1), true))
@@ -62,7 +61,6 @@ Citizen.CreateThread(function()
                 end
             end
         end
-
         if not HasKey and IsPedInAnyVehicle(GetPlayerPed(-1), false) and GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), false), -1) == GetPlayerPed(-1) and hori ~= nil and not IsHotwiring then
             local veh = GetVehiclePedIsIn(GetPlayerPed(-1), false)
             SetVehicleEngineOn(veh, false, false, true)
@@ -75,7 +73,6 @@ Citizen.CreateThread(function()
                 Hotwire()
             end
         end
-
         if IsControlJustPressed(1, Keys["L"]) then
             LockVehicle()
         end
@@ -182,16 +179,12 @@ function RobVehicle(target)
         while IsRobbing do
             local RandWait = math.random(10000, 15000)
             loadAnimDict("random@mugging3")
-
             TaskLeaveVehicle(target, GetVehiclePedIsIn(target, true), 256)
             Citizen.Wait(1000)
             ClearPedTasksImmediately(target)
-
             TaskStandStill(target, RandWait)
             TaskHandsUp(target, RandWait, GetPlayerPed(-1), 0, false)
-
             Citizen.Wait(RandWait)
-
             TaskReactAndFleePed(target, GetPlayerPed(-1))
             IsRobbing = false
         end
@@ -216,7 +209,6 @@ function LockVehicle()
                     local vehLockStatus = GetVehicleDoorLockStatus(veh)
                     loadAnimDict("anim@mp_player_intmenu@key_fob@")
                     TaskPlayAnim(GetPlayerPed(-1), 'anim@mp_player_intmenu@key_fob@', 'fob_click' ,3.0, 3.0, -1, 49, 0, false, false, false)
-        
                     if vehLockStatus == 1 then
                         Citizen.Wait(750)
                         ClearPedTasks(GetPlayerPed(-1))
@@ -238,7 +230,6 @@ function LockVehicle()
                             hori.Functions.Notify("No voi vittu..")
                         end
                     end
-        
                     if not IsPedInAnyVehicle(GetPlayerPed(-1)) then
                         SetVehicleInteriorlight(veh, true)
                         SetVehicleIndicatorLights(veh, 0, true)
@@ -339,7 +330,6 @@ function LockpickIgnition(isAdvanced)
                 IsHotwiring = true
                 SucceededAttempts = 0
                 PoliceCall()
-
                 if isAdvanced then
                     local maxwidth = 10
                     local maxduration = 1750
@@ -371,16 +361,13 @@ function LockpickIgnition(isAdvanced)
                     widthAmount = math.random(5, maxwidth)
                     durationAmount = math.random(500, maxduration)
                 end
-
                 local dict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@"
                 local anim = "machinic_loop_mechandplayer"
-
                 RequestAnimDict(dict)
                 while not HasAnimDictLoaded(dict) do
                     RequestAnimDict(dict)
                     Citizen.Wait(100)
                 end
-
                 Skillbar.Start({
                     duration = math.random(5000, 10000),
                     pos = math.random(10, 30),
@@ -567,20 +554,14 @@ function GetClosestVehicleInDirection(coordFrom, coordTo)
 	local offset = 0
 	local rayHandle
 	local vehicle
-
 	for i = 0, 100 do
 		rayHandle = CastRayPointToPoint(coordFrom.x, coordFrom.y, coordFrom.z, coordTo.x, coordTo.y, coordTo.z + offset, 10, GetPlayerPed(-1), 0)	
 		a, b, c, d, vehicle = GetRaycastResult(rayHandle)
-		
 		offset = offset - 1
-
 		if vehicle ~= 0 then break end
 	end
-	
 	local distance = Vdist2(coordFrom, GetEntityCoords(vehicle))
-	
 	if distance > 250 then vehicle = nil end
-
     return vehicle ~= nil and vehicle or 0
 end
 
