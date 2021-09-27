@@ -19,11 +19,10 @@ AddEventHandler('chatMessage', function(source, _, message)
 		if RepairEveryoneWhitelisted == true then
 			TriggerClientEvent('iens:repair', source)
 		else
-			if checkWhitelist(identifier) then
-				TriggerClientEvent('iens:repair', source)
-			else
-				TriggerClientEvent('iens:notAllowed', source)
-			end
+		if checkWhitelist(identifier) then
+			TriggerClientEvent('iens:repair', source)
+		else
+			TriggerClientEvent('iens:notAllowed', source)
 		end
 	end
 end)
