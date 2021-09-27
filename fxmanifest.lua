@@ -1,6 +1,8 @@
 fx_version 'adamant'
 game 'common'
 
+description 'Revohka - QB-traficom'
+
 client_scripts {
     'core/setup/keyssetup.lua',
     'core/client/keyscl.lua',
